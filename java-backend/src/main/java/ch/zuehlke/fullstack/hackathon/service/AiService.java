@@ -10,6 +10,7 @@ import com.theokanning.openai.service.OpenAiService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,16 +18,24 @@ import java.util.Optional;
 public class AiService {
 
     @Value("${app.openapi.key}")
-    private String apiKey;
+    protected String apiKey;
 
     private OpenAiService openAiService;
+
+    private PromptService promptService;
+
+    private final String MODEL = "gpt-4-0125-preview";
+
+    public AiService() {
+        promptService = new PromptService();
+    }
 
     public Optional<String> getMessageOfTheDay() {
         ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(), "Write a message of the day for a software engineer.");
         List<ChatMessage> messages = List.of(message);
         ChatCompletionRequest chatRequest = ChatCompletionRequest.builder()
                 .messages(messages)
-                .model("gpt-4-0125-preview")
+                .model(this.MODEL)
                 .maxTokens(100)
                 .n(1)
                 .build();
@@ -50,9 +59,26 @@ public class AiService {
                 .map(Image::getUrl);
     }
 
+    public Optional<String> getCodeReview(String codeSnippet) {
+        String prompt = promptService.generateCodeReviewPrompt(codeSnippet);
+        ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(), prompt);
+        List<ChatMessage> messages = List.of(message);
+        ChatCompletionRequest chatRequest = ChatCompletionRequest.builder()
+                .messages(messages)
+                .model(this.MODEL)
+                .n(1)
+                .build();
+
+        return getOpenAiService().createChatCompletion(chatRequest).getChoices().stream()
+                .findFirst()
+                .map(ChatCompletionChoice::getMessage)
+                .map(ChatMessage::getContent);
+    }
+
+
     private OpenAiService getOpenAiService() {
         if (openAiService == null) {
-            this.openAiService = new OpenAiService(apiKey);
+            this.openAiService = new OpenAiService(apiKey, Duration.ofSeconds(60));
         }
 
         return openAiService;
