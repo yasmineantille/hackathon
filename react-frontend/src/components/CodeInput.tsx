@@ -12,7 +12,7 @@ const CodeInput = () => {
     }
 
     function handleSubmit() {
-        remoteService.post('/review', code);
+        remoteService.post('/review/', code);
     }
 
     return (

@@ -21,7 +21,7 @@ public class AinspectrController {
     @ApiResponse(responseCode = "200", description = "Successfully returned code review")
     @ApiResponse(responseCode = "500", description = "Something failed internally")
     @PostMapping("/")
-    public ResponseEntity<ReviewDto> getCodeReview(@RequestParam String codeSnippet) {
+    public ResponseEntity<ReviewDto> getCodeReview(@RequestBody String codeSnippet) {
         ReviewDto result;
         try {
             result = this.codeReviewService.getCodeReview(codeSnippet);
