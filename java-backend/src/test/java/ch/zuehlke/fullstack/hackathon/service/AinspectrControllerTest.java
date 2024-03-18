@@ -5,18 +5,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 class AinspectrControllerTest {
 
     private CodeReviewService codeReviewService;
 
-    private AiService aiServiceMock;
+    private AiService aiService;
 
     @BeforeEach
     void setUp() {
-        aiServiceMock = mock(AiService.class);
-        codeReviewService = new CodeReviewService(aiServiceMock);
+        aiService = new AiService();
+        aiService.apiKey = "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";
+        codeReviewService = new CodeReviewService(aiService);
     }
 
     @Test
@@ -25,5 +25,25 @@ class AinspectrControllerTest {
 
         assertThat(reviewDto).isNotNull();
         assertThat(reviewDto.review()).isEqualTo("The code is perfect. No review necessary!");
+    }
+
+    @Test
+    void getCodeReview() {
+        String codeSnippet = "public class Fibonacci {\n" +
+                "    public static int fibonacci(int n) {\n" +
+                "        if (n <= 1) {\n" +
+                "            return n;\n" +
+                "        } else {\n" +
+                "            return fibonacci(n - 1) + fibonacci(n - 2);\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+
+        ReviewDto reviewDto = codeReviewService.getCodeReview(codeSnippet);
+
+        System.out.println("Result: " + reviewDto.review());
+
+        assertThat(reviewDto).isNotNull();
+        assertThat(reviewDto.review()).contains("public class Fibonacci");
     }
 }
