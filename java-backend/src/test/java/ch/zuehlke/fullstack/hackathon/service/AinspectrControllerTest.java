@@ -15,7 +15,7 @@ class AinspectrControllerTest {
     @BeforeEach
     void setUp() {
         aiService = new AiService();
-        aiService.apiKey = "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";
+        aiService.apiKey = "";
         codeReviewService = new CodeReviewService(aiService);
     }
 
