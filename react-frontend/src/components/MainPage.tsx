@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import {useState} from 'react';
+import { useState } from 'react';
+import FileUploader from './FileUploader.tsx';
 import CodeInput from "./CodeInput.tsx";
 
 const Section = styled.div`
@@ -34,6 +36,8 @@ export default function MainPage() {
                 onChange={handleOnCodeChange}
                 onLanguageChange={handleOnLanguageChange}
             ></CodeInput>
+
+            <FileUploader/>
         </Section>
     );
 }
