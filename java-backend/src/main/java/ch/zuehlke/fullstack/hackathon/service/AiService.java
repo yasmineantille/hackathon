@@ -21,12 +21,14 @@ public class AiService {
 
     private OpenAiService openAiService;
 
+    private final String MODEL = "gpt-4-0125-preview";
+
     public Optional<String> getMessageOfTheDay() {
         ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(), "Write a message of the day for a software engineer.");
         List<ChatMessage> messages = List.of(message);
         ChatCompletionRequest chatRequest = ChatCompletionRequest.builder()
                 .messages(messages)
-                .model("gpt-4-0125-preview")
+                .model(this.MODEL)
                 .maxTokens(100)
                 .n(1)
                 .build();
@@ -48,6 +50,22 @@ public class AiService {
         return getOpenAiService().createImage(request).getData().stream()
                 .findFirst()
                 .map(Image::getUrl);
+    }
+
+    public Optional<String> getCodeReview() {
+        String prompt = "Give me a sample code review.";
+        ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(), prompt);
+        List<ChatMessage> messages = List.of(message);
+        ChatCompletionRequest chatRequest = ChatCompletionRequest.builder()
+                .messages(messages)
+                .model(this.MODEL)
+                .n(1)
+                .build();
+
+        return getOpenAiService().createChatCompletion(chatRequest).getChoices().stream()
+                .findFirst()
+                .map(ChatCompletionChoice::getMessage)
+                .map(ChatMessage::getContent);
     }
 
     private OpenAiService getOpenAiService() {
