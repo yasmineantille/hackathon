@@ -1,9 +1,8 @@
 import styled from 'styled-components';
-import Button from '../shared/Button.tsx';
 import remoteService from '../services/RemoteService.tsx';
-import { useEffect, useState } from 'react';
-import LoadingPage from '../shared/LoadingPage.tsx';
-import { ExampleDto, MessageOfTheDayDto } from '../shared/model.tsx';
+import {useEffect, useState} from 'react';
+import {ExampleDto, MessageOfTheDayDto} from '../shared/model.tsx';
+import CodeInput from "./CodeInput.tsx";
 
 const Section = styled.div`
   display: flex;
@@ -36,7 +35,6 @@ export default function MainPage() {
     }
 
     useEffect(() => {
-        loadData();
     }, []);
 
     function loadExample() {
@@ -55,16 +53,9 @@ export default function MainPage() {
         });
     }
 
-    if (example == undefined || motd == undefined) {
-        return <LoadingPage/>;
-    }
-
     return (
         <Section>
-            <ExampleTitle>{example.name} {example.value}</ExampleTitle>
-            <ExampleSubTitle>Message of the day: {motd.content}</ExampleSubTitle>
-            <img src={motd.imageUrl} alt="A cat engineering software."></img>
-            <Button onClick={loadData}>Refresh</Button>
+            <CodeInput></CodeInput>
         </Section>
     );
 }

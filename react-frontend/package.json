@@ -11,14 +11,21 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@uiw/codemirror-extensions-basic-setup": "^4.21.24",
+    "@uiw/codemirror-extensions-langs": "^4.21.24",
+    "@uiw/codemirror-theme-material": "^4.21.24",
+    "@uiw/react-codemirror": "^4.21.24",
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",
     "http-proxy-middleware": "^2.0.6",
     "mermaid": "^10.9.0",
     "react": "^18.2.0",
+    "react-ace-builds": "^7.4.1",
     "react-burger-menu": "^3.0.9",
+    "react-codemirror-merge": "^4.21.24",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
+    "react-syntax-highlighter": "^15.5.0",
     "react-tabs": "^6.0.2",
     "react-toastify": "^10.0.4",
     "styled-components": "^6.1.8"

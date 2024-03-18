@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import logo from '/src/assets/zuhlke-logo-rgb.png';
 import { Link } from 'react-router-dom';
@@ -112,14 +112,14 @@ export default function Header() {
                 <NavLink to="/other" onClick={closeSideBar}>
                     Other Page
                 </NavLink>
-                <NavLink to="https://github.com/Cyberdog52/hackathon">Github</NavLink>
+                <NavLink to="https://github.com/yasmineantille/hackathon">Github</NavLink>
             </Menu>
             <HeaderSection>
                 <Link to="/">
                     <Logo src={logo} alt="Logo"/>
                 </Link>
                 <NavLink to="/">
-                    <Title>Zühlke Hackathon 2024</Title>
+                    <Title>AInspectr</Title>
                 </NavLink>
                 <HamburgerMenuPlaceholder></HamburgerMenuPlaceholder>
             </HeaderSection>
