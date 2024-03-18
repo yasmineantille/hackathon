@@ -1,5 +1,6 @@
 import {ChangeEvent} from 'react';
 import {Section} from './MainPage.tsx';
+import remoteService from '../services/RemoteService.tsx';
 
 export default function FileUploader() {
   const onInputChange = (ev: ChangeEvent) => {
@@ -12,9 +13,7 @@ export default function FileUploader() {
 
       reader.addEventListener(
         "load",
-        () => {
-          console.log('rezz ',  reader.result);
-        },
+        () => remoteService.post('upload', {fileContents: reader.result}),
         false,
       );
 
