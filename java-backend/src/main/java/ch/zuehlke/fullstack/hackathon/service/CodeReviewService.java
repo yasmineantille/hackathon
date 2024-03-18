@@ -13,8 +13,8 @@ public class CodeReviewService {
 
     private final AiService aiService;
 
-    public ReviewDto getCodeReview() {
-        Optional<String> example = aiService.getCodeReview();
+    public ReviewDto getCodeReview(String codeSnippet) {
+        Optional<String> example = aiService.getCodeReview(codeSnippet);
         return new ReviewDto(example.orElse("No review."));
     }
 
