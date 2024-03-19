@@ -14,6 +14,7 @@
     "@monaco-editor/react": "^4.6.0",
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",
+    "highlight.js": "^11.9.0",
     "http-proxy-middleware": "^2.0.6",
     "mermaid": "^10.9.0",
     "react": "^18.2.0",

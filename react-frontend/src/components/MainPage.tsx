@@ -6,6 +6,7 @@ import Button from "../shared/Button.tsx";
 import remoteService from "../services/RemoteService.tsx";
 import DiffViewer from "./DiffViewer.tsx";
 import Review from "./Review.tsx";
+import hljs from "highlight.js";
 
 export const Section = styled.div`
     display: flex;
@@ -48,8 +49,17 @@ export default function MainPage() {
     const handleOnCodeChange = (value?: string) => {
         if (value) {
             setCode(value);
+            detectLanguage(value);
         }
     };
+
+    const detectLanguage = (codeSnippet: string) => {
+        const language = hljs.highlightAuto(codeSnippet).language;
+        if (language) {
+            setLanguage(language);
+        }
+    }
+
 
     const changeLanguage = (newLanguage: string) => {
         setLanguage(newLanguage); // A function provided by the parent to update the language state
@@ -62,7 +72,10 @@ export default function MainPage() {
     };
 
     const handleOnSubmit = () => {
-        remoteService.post<ReviewResponse>('/review', {codeSnippet: previewCode, ruleSet: localStorage.getItem('substitutionMap')} as CodeRequestDto).then((response) => {
+        remoteService.post<ReviewResponse>('/review', {
+            codeSnippet: previewCode,
+            ruleSet: localStorage.getItem('substitutionMap')
+        } as CodeRequestDto).then((response) => {
             setComments(extractAdditionalComments(response.review) ?? '');
             setReviewedCode(extractCodeBlockAndSetLanguage(response.review) ?? '');
             setIsPreview(false);
@@ -70,7 +83,10 @@ export default function MainPage() {
     }
 
     const handleOnPreview = () => {
-        remoteService.post<CodeResponse>('/sanitize', {codeSnippet: code, ruleSet: localStorage.getItem('substitutionMap')} as CodeRequestDto).then((response) => {
+        remoteService.post<CodeResponse>('/sanitize', {
+            codeSnippet: code,
+            ruleSet: localStorage.getItem('substitutionMap')
+        } as CodeRequestDto).then((response) => {
             setPreviewCode(response.code);
             setIsPreview(true);
         })
