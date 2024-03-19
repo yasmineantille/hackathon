@@ -1,6 +1,6 @@
 package ch.zuehlke.fullstack.hackathon.service;
 
-import ch.zuehlke.fullstack.hackathon.model.ReviewDto;
+import ch.zuehlke.fullstack.hackathon.dto.ReviewDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
