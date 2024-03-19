@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 interface PopupProps {
     initialKey: string;
@@ -8,14 +8,32 @@ interface PopupProps {
 
 const SelectionPopup: React.FC<PopupProps> = ({ initialKey, onClose, onSave }) => {
     const [key, setKey] = useState(initialKey);
-    const [value, setValue] = useState('')
+    const [value, setValue] = useState('');
+    const valueInputRef = useRef<HTMLInputElement>(null);
+    const popupRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        valueInputRef.current?.focus();
+
+        const handleClickOutside = (event: MouseEvent) => {
+            if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
+                onClose();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [onClose]);
 
     const handleSave = () => {
         onSave(key, value);
     }
 
     return (
-        <div style={{ position: 'absolute', border: '1px solid gray', padding: '10px', backgroundColor: 'white', zIndex: 100 }}>
+        <div ref={popupRef} style={{ position: 'absolute', border: '1px solid gray', padding: '10px', backgroundColor: 'white', zIndex: 100 }}>
             <div>
                 <label htmlFor="keyInput">Key:</label>
                 <input
@@ -29,6 +47,7 @@ const SelectionPopup: React.FC<PopupProps> = ({ initialKey, onClose, onSave }) =
                 <label htmlFor="valueInput">Value:</label>
                 <input
                     id="valueInput"
+                    ref={valueInputRef}
                     type="text"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
