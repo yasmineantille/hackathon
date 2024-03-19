@@ -1,4 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {CSSProperties, useEffect, useRef, useState} from 'react';
+import Button from "../shared/Button.tsx";
 
 interface PopupProps {
     initialKey: string;
@@ -6,7 +7,37 @@ interface PopupProps {
     onSave: (key: string, value: string) => void;
 }
 
-const SelectionPopup: React.FC<PopupProps> = ({ initialKey, onClose, onSave }) => {
+const style: { [key: string]: CSSProperties } = {
+    popupContainer: {
+        position: 'absolute',
+        border: '1px solid gray',
+        padding: '20px',
+        backgroundColor: 'white',
+        zIndex: 100,
+        width: '300px',
+        borderRadius: '8px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+    },
+    inputWrapper: {
+        marginBottom: '20px'
+    },
+    label: {
+        marginBottom: '5px'
+    },
+    inputField: {
+        padding: '8px',
+        borderRadius: '4px',
+        border: '1px solid #ccc'
+    },
+    buttonWrapper: {
+        marginTop: '25px',
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '10px'
+    }
+}
+
+const SelectionPopup: React.FC<PopupProps> = ({initialKey, onClose, onSave}) => {
     const [key, setKey] = useState(initialKey);
     const [value, setValue] = useState('');
     const valueInputRef = useRef<HTMLInputElement>(null);
@@ -39,30 +70,34 @@ const SelectionPopup: React.FC<PopupProps> = ({ initialKey, onClose, onSave }) =
     };
 
     return (
-        <div ref={popupRef} style={{ position: 'absolute', border: '1px solid gray', padding: '10px', backgroundColor: 'white', zIndex: 100 }}>
-            <div>
-                <label htmlFor="keyInput">Key:</label>
-                <input
-                    id="keyInput"
-                    type="text"
-                    value={key}
-                    onChange={(e) => setKey(e.target.value)}
-                />
+        <div ref={popupRef} style={style.popupContainer}>
+            <div style={style.inputWrapper}>
+                <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '10px' }}>
+                    <label htmlFor="keyInput" style={style.label}>Key:</label>
+                    <input
+                        id="keyInput"
+                        type="text"
+                        value={key}
+                        style={style.inputField}
+                        onChange={(e) => setKey(e.target.value)}
+                    />
+                </div>
             </div>
-            <div>
-                <label htmlFor="valueInput">Value:</label>
+            <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '10px' }}>
+                <label htmlFor="valueInput" style={style.label}>Value:</label>
                 <input
                     id="valueInput"
                     ref={valueInputRef}
                     type="text"
                     value={value}
+                    style={style.inputField}
                     onChange={(e) => setValue(e.target.value)}
                     onKeyDown={handleKeyPress}
                 />
             </div>
-            <div>
-                <button onClick={onClose}>Close</button>
-                <button onClick={handleSave}>Save</button>
+            <div style={style.buttonWrapper}>
+                <Button onClick={onClose}>Close</Button>
+                <Button onClick={handleSave}>Save</Button>
             </div>
         </div>
     );
