@@ -27,6 +27,25 @@ export const SubSectionTitle = styled.h1`
   margin-bottom: 10px;
 `;
 
+export const LoadingTitle = styled.h1`
+  font-size: 40px;
+  margin-right: 25px;
+  color: white;
+`;
+
+export const LoadingSpinnerSection = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+`;
+
 export interface CodeRequestDto {
     codeSnippet: string;
     ruleSet: string;
@@ -49,6 +68,7 @@ export default function MainPage() {
     const [isPreview, setIsPreview] = useState(true);
     const [showPopup, setShowPopup] = useState(false);
     const [selectedCode, setSelectedCode] = useState('');
+    const [isLoadingPreview, setIsLoadingPreview] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
 
@@ -99,6 +119,7 @@ export default function MainPage() {
     }
 
     const handleOnPreview = () => {
+        setIsLoadingPreview(true);
         remoteService.post<CodeResponse>('/sanitize', {
             codeSnippet: code,
             ruleSet: localStorage.getItem('substitutionMap')
@@ -106,6 +127,11 @@ export default function MainPage() {
             setPreviewCode(response.code);
             setIsPreview(true);
         })
+            .finally(() => {
+                setTimeout(() => {
+                    setIsLoadingPreview(false);
+                }, 500);
+            });
     }
 
     const closePopup = () => setShowPopup(false);
@@ -169,12 +195,17 @@ export default function MainPage() {
             <br/>
             <Button onClick={handleOnPreview}>Preview</Button>
         </Section>
-            {isPreview && previewCode.length > 0 && getPreview()}
+            {isLoadingPreview ? (
+                <LoadingSpinnerSection>
+                    <LoadingTitle>Loading</LoadingTitle>
+                    <SyncLoader color="white"></SyncLoader>
+                </LoadingSpinnerSection>
+            ) : (isPreview && previewCode.length > 0 && getPreview())}
             {isLoading ? (
-                <Section>
-                    <SubSectionTitle>Reviewing your code ...</SubSectionTitle>
-                    <SyncLoader />
-                </Section>
+                <LoadingSpinnerSection>
+                    <LoadingTitle>Reviewing your Code</LoadingTitle>
+                    <SyncLoader color="white"></SyncLoader>
+                </LoadingSpinnerSection>
             ) : (
                 !isPreview && previewCode.length > 0 && (
                     <Section>
