@@ -1,12 +1,13 @@
 package ch.zuehlke.fullstack.hackathon.service;
 
 
-import ch.zuehlke.fullstack.hackathon.model.ReviewDto;
-import ch.zuehlke.fullstack.hackathon.model.CodeSnippetDto;
-import ch.zuehlke.fullstack.hackathon.model.SanitizationRequestDto;
+import ch.zuehlke.fullstack.hackathon.dto.ReviewDto;
+import ch.zuehlke.fullstack.hackathon.dto.CodeSnippetDto;
+import ch.zuehlke.fullstack.hackathon.model.CodeRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -25,13 +26,23 @@ public class CodeReviewService {
         return new ReviewDto(exampleCodeReview);
     }
 
-    public CodeSnippetDto getSanitizedCode(SanitizationRequestDto codeSnippet) {
-        String sanitizedCode = codeSnippet.codeSnippet();
-        return new CodeSnippetDto(sanitizedCode);
+    public CodeSnippetDto getSanitizedCode(CodeRequest codeRequest) {
+        String codeSnippet = codeRequest.codeSnippet();
+        Map<String, String> ruleset = codeRequest.ruleset();
+
+        for(Map.Entry<String, String> entry: ruleset.entrySet()) {
+            codeSnippet = codeSnippet.replaceAll(entry.getKey(), entry.getValue());
+        }
+
+        return new CodeSnippetDto(codeSnippet);
     }
 
-    public CodeSnippetDto getUnsanitizedCode() {
-        String unsanitizedCode = "codeSnippet";
-        return new CodeSnippetDto(unsanitizedCode);
+    public ReviewDto getUnsanitizedCode(String codeSnippet, Map<String, String> ruleset) {
+        String result = codeSnippet;
+        for(Map.Entry<String, String> entry: ruleset.entrySet()) {
+            result = codeSnippet.replaceAll(entry.getValue(), entry.getKey());
+        }
+
+        return new ReviewDto(result);
     }
 }

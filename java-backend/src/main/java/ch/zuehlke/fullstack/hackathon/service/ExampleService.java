@@ -1,7 +1,7 @@
 package ch.zuehlke.fullstack.hackathon.service;
 
-import ch.zuehlke.fullstack.hackathon.model.ExampleDto;
-import ch.zuehlke.fullstack.hackathon.model.MessageOfTheDayDto;
+import ch.zuehlke.fullstack.hackathon.dto.ExampleDto;
+import ch.zuehlke.fullstack.hackathon.dto.MessageOfTheDayDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
