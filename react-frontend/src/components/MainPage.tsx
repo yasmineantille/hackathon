@@ -1,61 +1,39 @@
 import styled from 'styled-components';
-import remoteService from '../services/RemoteService.tsx';
-import {useEffect, useState} from 'react';
-import {ExampleDto, MessageOfTheDayDto} from '../shared/model.tsx';
+import {useState} from 'react';
 import CodeInput from "./CodeInput.tsx";
 
 const Section = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const ExampleTitle = styled.h3`
-  font-size: 3rem;
-  margin-bottom: 0;
-  color: var(--secondary);
-  padding-bottom: 4%;
-`;
-
-const ExampleSubTitle = styled.h4`
-  font-size: 3rem;
-  margin-bottom: 0;
-  color: var(--tertiary);
-  padding-bottom: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 export default function MainPage() {
-    const [example, setExample] = useState<ExampleDto | undefined>(undefined);
+    const [code, setCode] = useState("function add(a, b) { return a + b; }");
+    const [language, setLanguage] = useState("javascript")
 
-    const [motd, setMotd] = useState<MessageOfTheDayDto | undefined>(undefined);
-
-    function loadData() {
-        loadExample();
-        loadMessageOfTheDay();
+    const handleOnCodeChange = (value?: string) => {
+        if (value) {
+            setCode(value);
+        }
+        console.log(code);
     }
 
-    useEffect(() => {
-    }, []);
-
-    function loadExample() {
-        setExample(undefined);
-        remoteService.get<ExampleDto>('/example/').then((response: ExampleDto) => {
-            console.log(response);
-            setExample(response);
-        });
+    const handleOnLanguageChange = (value?: string) => {
+        if (value) {
+            setLanguage(value);
+        }
     }
 
-    function loadMessageOfTheDay() {
-        setMotd(undefined);
-        remoteService.get<MessageOfTheDayDto>('/example/motd').then((response: MessageOfTheDayDto) => {
-            console.log(response);
-            setMotd(response);
-        });
-    }
 
     return (
         <Section>
-            <CodeInput></CodeInput>
+            <CodeInput
+                code={code}
+                language={language}
+                onChange={handleOnCodeChange}
+                onLanguageChange={handleOnLanguageChange}
+            ></CodeInput>
         </Section>
     );
 }
