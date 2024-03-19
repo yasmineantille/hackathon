@@ -1,7 +1,7 @@
 package ch.zuehlke.fullstack.hackathon.controller;
 
-import ch.zuehlke.fullstack.hackathon.model.ExampleDto;
-import ch.zuehlke.fullstack.hackathon.model.MessageOfTheDayDto;
+import ch.zuehlke.fullstack.hackathon.dto.ExampleDto;
+import ch.zuehlke.fullstack.hackathon.dto.MessageOfTheDayDto;
 import ch.zuehlke.fullstack.hackathon.service.ExampleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

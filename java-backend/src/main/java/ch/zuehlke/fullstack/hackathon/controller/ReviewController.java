@@ -1,6 +1,10 @@
 package ch.zuehlke.fullstack.hackathon.controller;
 
-import ch.zuehlke.fullstack.hackathon.model.ReviewDto;
+import ch.zuehlke.fullstack.hackathon.converter.SanitizationRequestConverter;
+import ch.zuehlke.fullstack.hackathon.dto.CodeRequestDto;
+import ch.zuehlke.fullstack.hackathon.dto.CodeSnippetDto;
+import ch.zuehlke.fullstack.hackathon.dto.ReviewDto;
+import ch.zuehlke.fullstack.hackathon.model.CodeRequest;
 import ch.zuehlke.fullstack.hackathon.service.CodeReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,17 +18,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/review")
 @RequiredArgsConstructor
 @Slf4j
-public class AinspectrController {
+public class ReviewController {
 
     private final CodeReviewService codeReviewService;
 
     @ApiResponse(responseCode = "200", description = "Successfully returned code review")
     @ApiResponse(responseCode = "500", description = "Something failed internally")
-    @PostMapping("/")
-    public ResponseEntity<ReviewDto> getCodeReview(@RequestBody String codeSnippet) {
+    @PostMapping
+    public ResponseEntity<ReviewDto> getCodeReview(@RequestBody CodeRequestDto requestDto) {
         ReviewDto result;
         try {
-            result = this.codeReviewService.getCodeReview(codeSnippet);
+            result = this.codeReviewService.getCodeReview(requestDto.codeSnippet());
+            CodeRequest req = SanitizationRequestConverter.converter(requestDto);
+            result = this.codeReviewService.getUnsanitizedCode(result.review(), req.ruleset());
         } catch (Exception exception) {
             log.error("Code review could not be fetched", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,6 +1,6 @@
 package ch.zuehlke.fullstack.hackathon.service;
 
-import ch.zuehlke.fullstack.hackathon.model.ExampleDto;
+import ch.zuehlke.fullstack.hackathon.dto.ExampleDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
