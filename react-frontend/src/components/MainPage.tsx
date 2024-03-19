@@ -6,24 +6,25 @@ import Button from "../shared/Button.tsx";
 import remoteService from "../services/RemoteService.tsx";
 import DiffViewer from "./DiffViewer.tsx";
 import Review from "./Review.tsx";
+import {SyncLoader} from "react-spinners";
 import hljs from "highlight.js";
 import SelectionPopup from "./SelectionPopup.tsx";
 
 export const Section = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0.5rem 0.5rem 1.5rem 0.5rem;
-    background-color: rgba(165, 165, 165, 0);
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 1.5rem;
-    background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0.5rem 1.5rem 0.5rem;
+  background-color: rgba(165, 165, 165, 0);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 1.5rem;
+  background-color: white;
 `;
 
 export const SubSectionTitle = styled.h1`
-    font-size: 20px; 
-    margin-bottom: 10px; 
+  font-size: 20px;
+  margin-bottom: 10px;
 `;
 
 export interface CodeRequestDto {
@@ -48,6 +49,8 @@ export default function MainPage() {
     const [isPreview, setIsPreview] = useState(true);
     const [showPopup, setShowPopup] = useState(false);
     const [selectedCode, setSelectedCode] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
 
     useEffect(() => {
         const map = localStorage.getItem('substitutionMap');
@@ -81,6 +84,7 @@ export default function MainPage() {
     };
 
     const handleOnSubmit = () => {
+        setIsLoading(true);
         remoteService.post<ReviewResponse>('/review', {
             codeSnippet: previewCode,
             ruleSet: localStorage.getItem('substitutionMap')
@@ -88,7 +92,10 @@ export default function MainPage() {
             setComments(extractAdditionalComments(response.review) ?? '');
             setReviewedCode(extractCodeBlockAndSetLanguage(response.review) ?? '');
             setIsPreview(false);
-        });
+        })
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
     const handleOnPreview = () => {
@@ -163,12 +170,19 @@ export default function MainPage() {
             <Button onClick={handleOnPreview}>Preview</Button>
         </Section>
             {isPreview && previewCode.length > 0 && getPreview()}
-            {!isPreview && previewCode.length > 0 &&
+            {isLoading ? (
                 <Section>
-                    <SubSectionTitle>Additional Remarks</SubSectionTitle>
-                    <Review originalCode={code} reviewedCode={reviewedCode} additionalComments={comments}></Review>
-            </Section>
-            }
+                    <SubSectionTitle>Reviewing your code ...</SubSectionTitle>
+                    <SyncLoader />
+                </Section>
+            ) : (
+                !isPreview && previewCode.length > 0 && (
+                    <Section>
+                        <SubSectionTitle>Code Review</SubSectionTitle>
+                        <Review originalCode={code} reviewedCode={reviewedCode} additionalComments={comments} />
+                    </Section>
+                )
+            )}
         </>
     );
 }
