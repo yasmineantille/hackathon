@@ -1,37 +1,39 @@
-import {useRef, useState} from 'react';
-import {Light as SyntaxHighlighter} from 'react-syntax-highlighter';
-import {docco} from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import Button from "../shared/Button.tsx";
-import remoteService from '../services/RemoteService.tsx';
+import React from 'react';
+import MonacoEditor, { OnMount } from '@monaco-editor/react';
 
-const CodeInput = () => {
-    const [code, setCode] = useState('');
-    const codeRef = useRef(null);
-    if (codeRef.current) {
-        console.log((codeRef.current! as HTMLInputElement).value)
-    }
+export interface CodeInputProps {
+    code: string;
+    language: string;
+    onChange: (newValue?: string) => void;
+    onLanguageChange: (newValue?: string) => void;
+}
+const CodeInput = ({ code, language, onChange, onLanguageChange }: CodeInputProps) : JSX.Element => {
+    const editorDidMount = (editor: any) => {
+        editor.focus();
+    };
 
-    function handleSubmit() {
-        remoteService.post('/review/', code);
-    }
+    const changeLanguage = (newLanguage: string) => {
+        onLanguageChange(newLanguage); // A function provided by the parent to update the language state
+    };
 
     return (
-        <>
-            <div>
-            <textarea
+        <div>
+            <MonacoEditor
+                height="20rem"
+                width="50rem"
+                language={language}
+                theme="vs-dark"
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="Insert your code here..."
-                style={{width: '100%', height: '150px'}}
-                ref={codeRef}
-            ></textarea>
-                <div style={{marginTop: '20px'}}>
-                    <SyntaxHighlighter language="java" style={docco}>
-                        {code}
-                    </SyntaxHighlighter>
-                </div>
-            </div>
-            <Button onClick={handleSubmit}>Submit</Button></>
+                options={{
+                    selectOnLineNumbers: true,
+                }}
+                onChange={onChange}
+                onMount={editorDidMount}
+            />
+            <button onClick={() => changeLanguage('javascript')}>JS</button>
+            <button onClick={() => changeLanguage('python')}>Python</button>
+            {/* Add more buttons for languages as needed */}
+        </div>
     );
 };
 
