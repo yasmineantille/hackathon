@@ -3,7 +3,7 @@ import {useState} from 'react';
 import FileUploader from './FileUploader.tsx';
 import CodeInput from "./CodeInput.tsx";
 
-const Section = styled.div`
+export const Section = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
