@@ -2,10 +2,23 @@ import {ChangeEvent} from 'react';
 import {Section} from './MainPage.tsx';
 
 export interface FileUploaderProps {
-  handleFileUploaded: (content: string | ArrayBuffer | undefined | null) => void;
+  handleFileUploaded: (content: string | undefined | null) => void;
 }
 
 export default function FileUploader({handleFileUploaded}: FileUploaderProps) {
+
+  const handleFileRead = (content: string | ArrayBuffer | null) => {
+    if (content) {
+      if (typeof content === 'string') {
+        handleFileUploaded(content);
+      } else if (typeof content === typeof ArrayBuffer) {
+        const decoder = new TextDecoder();
+        const str = decoder.decode(content);
+        handleFileUploaded(str);
+      }
+    }
+  };
+
   const onInputChange = (ev: ChangeEvent) => {
     const uploadedFiles = (ev.nativeEvent.target as HTMLInputElement).files;
 
@@ -16,7 +29,7 @@ export default function FileUploader({handleFileUploaded}: FileUploaderProps) {
 
       reader.addEventListener(
         'load',
-        () => handleFileUploaded(reader.result),
+        () => handleFileRead(reader.result),
         false,
       );
 
