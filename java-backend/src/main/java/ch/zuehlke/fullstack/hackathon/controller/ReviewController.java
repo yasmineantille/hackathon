@@ -2,7 +2,6 @@ package ch.zuehlke.fullstack.hackathon.controller;
 
 import ch.zuehlke.fullstack.hackathon.converter.SanitizationRequestConverter;
 import ch.zuehlke.fullstack.hackathon.dto.CodeRequestDto;
-import ch.zuehlke.fullstack.hackathon.dto.CodeSnippetDto;
 import ch.zuehlke.fullstack.hackathon.dto.ReviewDto;
 import ch.zuehlke.fullstack.hackathon.model.CodeRequest;
 import ch.zuehlke.fullstack.hackathon.service.CodeReviewService;
@@ -30,7 +29,7 @@ public class ReviewController {
         try {
             result = this.codeReviewService.getCodeReview(requestDto.codeSnippet());
             CodeRequest req = SanitizationRequestConverter.converter(requestDto);
-            result = this.codeReviewService.getUnsanitizedCode(result.review(), req.ruleset());
+            result = new ReviewDto(this.codeReviewService.getUnsanitizedCode(result.review(), req.ruleset()));
         } catch (Exception exception) {
             log.error("Code review could not be fetched", exception);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

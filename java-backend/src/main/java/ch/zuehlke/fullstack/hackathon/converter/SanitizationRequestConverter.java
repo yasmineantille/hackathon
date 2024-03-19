@@ -18,10 +18,10 @@ public class SanitizationRequestConverter {
         Map<String, String> resultMap = new HashMap<>();
 
         try {
-            resultMap = objectMapper.readValue(codeRequestDto.ruleset(), new TypeReference<Map<String,String>>() {});
+            resultMap = objectMapper.readValue(codeRequestDto.ruleSet(), new TypeReference<>() {
+            });
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
 
         return new CodeRequest(codeRequestDto.codeSnippet(), resultMap);

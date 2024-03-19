@@ -1,3 +1,3 @@
 package ch.zuehlke.fullstack.hackathon.dto;
 
-public record CodeRequestDto(String codeSnippet, String ruleset) {}
+public record CodeRequestDto(String codeSnippet, String ruleSet) {}
