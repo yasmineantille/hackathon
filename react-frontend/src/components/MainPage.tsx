@@ -13,6 +13,17 @@ export const Section = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 0.5rem 0.5rem 1.5rem 0.5rem;
+    background-color: rgba(165, 165, 165, 0);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 1.5rem;
+    background-color: white;
+`;
+
+export const SubSectionTitle = styled.h1`
+    font-size: 20px; 
+    margin-bottom: 10px; 
 `;
 
 export interface CodeRequestDto {
@@ -123,13 +134,17 @@ export default function MainPage() {
 
 
     function getPreview() {
-        return <><DiffViewer original={code} modified={previewCode}></DiffViewer>
+        return <Section>
+            <SubSectionTitle>Preview of Code You Want Reviewed</SubSectionTitle>
+            <DiffViewer original={code} modified={previewCode}></DiffViewer>
             <br/>
-            <Button onClick={handleOnSubmit}>Submit</Button></>;
+            <Button onClick={handleOnSubmit}>Submit</Button></Section>;
     }
 
     return (
+        <>
         <Section>
+            <SubSectionTitle>Your Friendly Neighbourhood Code Reviewer</SubSectionTitle>
             <CodeInput
                 code={code}
                 language={language}
@@ -146,10 +161,14 @@ export default function MainPage() {
             <FileUploader handleFileUploaded={handleFileUploaded}/>
             <br/>
             <Button onClick={handleOnPreview}>Preview</Button>
-            <br/>
+        </Section>
             {isPreview && previewCode.length > 0 && getPreview()}
             {!isPreview && previewCode.length > 0 &&
-                <Review originalCode={code} reviewedCode={reviewedCode} additionalComments={comments}></Review>}
-        </Section>
+                <Section>
+                    <SubSectionTitle>Additional Remarks</SubSectionTitle>
+                    <Review originalCode={code} reviewedCode={reviewedCode} additionalComments={comments}></Review>
+            </Section>
+            }
+        </>
     );
 }
