@@ -37,12 +37,12 @@ public class CodeReviewService {
         return new CodeSnippetDto(codeSnippet);
     }
 
-    public ReviewDto getUnsanitizedCode(String codeSnippet, Map<String, String> ruleset) {
+    public String getUnsanitizedCode(String codeSnippet, Map<String, String> ruleset) {
         String result = codeSnippet;
         for(Map.Entry<String, String> entry: ruleset.entrySet()) {
-            result = codeSnippet.replaceAll(entry.getValue(), entry.getKey());
+            result = result.replaceAll(entry.getValue(), entry.getKey());
         }
 
-        return new ReviewDto(result);
+        return result;
     }
 }
