@@ -7,6 +7,7 @@ import remoteService from "../services/RemoteService.tsx";
 import DiffViewer from "./DiffViewer.tsx";
 import Review from "./Review.tsx";
 import hljs from "highlight.js";
+import SelectionPopup from "./SelectionPopup.tsx";
 
 export const Section = styled.div`
     display: flex;
@@ -34,6 +35,8 @@ export default function MainPage() {
     const [language, setLanguage] = useState('javascript');
     const [comments, setComments] = useState('');
     const [isPreview, setIsPreview] = useState(true);
+    const [showPopup, setShowPopup] = useState(false);
+    const [selectedCode, setSelectedCode] = useState('');
 
     useEffect(() => {
         const map = localStorage.getItem('substitutionMap');
@@ -87,6 +90,18 @@ export default function MainPage() {
         })
     }
 
+    const closePopup = () => setShowPopup(false);
+
+    const handleSelectionChange = (selection: string): void => {
+        setSelectedCode(selection);
+        setShowPopup(true);
+    }
+
+    const saveNewSubstitution = (key: string, value: string): void => {
+        console.log('Key: ', key, 'Value: ', value);
+        setShowPopup(false);
+    }
+
     const extractCodeBlockAndSetLanguage = (input: string): string | null => {
         const regex = /```(.*?)```/s;
         const match = input.match(regex);
@@ -119,7 +134,15 @@ export default function MainPage() {
                 code={code}
                 language={language}
                 onChange={handleOnCodeChange}
+                onSelectionChange={handleSelectionChange}
             ></CodeInput>
+            {showPopup && (
+                <SelectionPopup
+                    initialKey={selectedCode}
+                    onClose={closePopup}
+                    onSave={saveNewSubstitution}
+                />
+            )}
             <FileUploader handleFileUploaded={handleFileUploaded}/>
             <br/>
             <Button onClick={handleOnPreview}>Preview</Button>
