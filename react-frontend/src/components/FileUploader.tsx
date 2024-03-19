@@ -1,10 +1,13 @@
 import {ChangeEvent} from 'react';
 import {Section} from './MainPage.tsx';
-import remoteService from '../services/RemoteService.tsx';
 
-export default function FileUploader() {
+export interface FileUploaderProps {
+  handleFileUploaded: (content: string | ArrayBuffer | undefined | null) => void;
+}
+
+export default function FileUploader({handleFileUploaded}: FileUploaderProps) {
   const onInputChange = (ev: ChangeEvent) => {
-    const uploadedFiles= (ev.nativeEvent.target as HTMLInputElement).files;
+    const uploadedFiles = (ev.nativeEvent.target as HTMLInputElement).files;
 
     if (uploadedFiles) {
       const fileContents = uploadedFiles.item(0);
@@ -12,8 +15,8 @@ export default function FileUploader() {
       const reader = new FileReader();
 
       reader.addEventListener(
-        "load",
-        () => remoteService.post('upload', {fileContents: reader.result}),
+        'load',
+        () => handleFileUploaded(reader.result),
         false,
       );
 
@@ -26,11 +29,7 @@ export default function FileUploader() {
 
   return (
     <Section>
-      <form>
-        <input type="file" name="file" accept="text/plain, application/javascript" onChange={onInputChange}/>
-        <button type="submit">Upload</button>
-      </form>
-
+      <input type="file" name="file" accept="text/plain, application/javascript" onChange={onInputChange}/>
     </Section>
   );
 

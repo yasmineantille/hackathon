@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import {useState} from 'react';
-import { useState } from 'react';
 import FileUploader from './FileUploader.tsx';
 import CodeInput from "./CodeInput.tsx";
 
@@ -11,6 +10,10 @@ const Section = styled.div`
 `;
 
 export default function MainPage() {
+
+    const handleFileUploaded = (content: string | ArrayBuffer | undefined | null) => {
+      console.log("file upld ", content);
+    }
     const [code, setCode] = useState("function add(a, b) { return a + b; }");
     const [language, setLanguage] = useState("javascript")
 
@@ -37,7 +40,7 @@ export default function MainPage() {
                 onLanguageChange={handleOnLanguageChange}
             ></CodeInput>
 
-            <FileUploader/>
+            <FileUploader handleFileUploaded={handleFileUploaded}/>
         </Section>
     );
 }
