@@ -10,10 +10,6 @@ export const Section = styled.div`
 `;
 
 export default function MainPage() {
-
-    const handleFileUploaded = (content: string | ArrayBuffer | undefined | null) => {
-      console.log("file upld ", content);
-    }
     const [code, setCode] = useState("function add(a, b) { return a + b; }");
     const [language, setLanguage] = useState("javascript")
 
@@ -30,6 +26,17 @@ export default function MainPage() {
         }
     }
 
+    const handleFileUploaded = (content: string | ArrayBuffer | undefined | null) => {
+        if (content) {
+            if (typeof content === 'string') {
+                setCode(content);
+            } else if (typeof content === typeof ArrayBuffer) {
+                const decoder = new TextDecoder();
+                const str = decoder.decode(content);
+                setCode(str);
+            }
+        }
+    }
 
     return (
         <Section>
