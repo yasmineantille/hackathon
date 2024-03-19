@@ -6,13 +6,44 @@ import Button from "../shared/Button.tsx";
 import remoteService from "../services/RemoteService.tsx";
 import DiffViewer from "./DiffViewer.tsx";
 import Review from "./Review.tsx";
+import {SyncLoader} from "react-spinners";
 import hljs from "highlight.js";
 import SelectionPopup from "./SelectionPopup.tsx";
 
 export const Section = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0.5rem 1.5rem 0.5rem;
+  background-color: rgba(165, 165, 165, 0);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 1.5rem;
+  background-color: white;
+`;
+
+export const SubSectionTitle = styled.h1`
+  font-size: 20px;
+  margin-bottom: 10px;
+`;
+
+export const LoadingTitle = styled.h1`
+  font-size: 40px;
+  margin-right: 25px;
+  color: white;
+`;
+
+export const LoadingSpinnerSection = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 `;
 
 export interface CodeRequestDto {
@@ -37,6 +68,9 @@ export default function MainPage() {
     const [isPreview, setIsPreview] = useState(true);
     const [showPopup, setShowPopup] = useState(false);
     const [selectedCode, setSelectedCode] = useState('');
+    const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
 
     useEffect(() => {
         const map = localStorage.getItem('substitutionMap');
@@ -70,6 +104,7 @@ export default function MainPage() {
     };
 
     const handleOnSubmit = () => {
+        setIsLoading(true);
         remoteService.post<ReviewResponse>('/review', {
             codeSnippet: previewCode,
             ruleSet: localStorage.getItem('substitutionMap')
@@ -77,10 +112,14 @@ export default function MainPage() {
             setComments(extractAdditionalComments(response.review) ?? '');
             setReviewedCode(extractCodeBlockAndSetLanguage(response.review) ?? '');
             setIsPreview(false);
-        });
+        })
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
     const handleOnPreview = () => {
+        setIsLoadingPreview(true);
         remoteService.post<CodeResponse>('/sanitize', {
             codeSnippet: code,
             ruleSet: localStorage.getItem('substitutionMap')
@@ -88,6 +127,11 @@ export default function MainPage() {
             setPreviewCode(response.code);
             setIsPreview(true);
         })
+            .finally(() => {
+                setTimeout(() => {
+                    setIsLoadingPreview(false);
+                }, 500);
+            });
     }
 
     const closePopup = () => setShowPopup(false);
@@ -123,13 +167,17 @@ export default function MainPage() {
 
 
     function getPreview() {
-        return <><DiffViewer original={code} modified={previewCode}></DiffViewer>
+        return <Section>
+            <SubSectionTitle>Preview of Code You Want Reviewed</SubSectionTitle>
+            <DiffViewer original={code} modified={previewCode}></DiffViewer>
             <br/>
-            <Button onClick={handleOnSubmit}>Submit</Button></>;
+            <Button onClick={handleOnSubmit}>Submit</Button></Section>;
     }
 
     return (
+        <>
         <Section>
+            <SubSectionTitle>Your Friendly Neighbourhood Code Reviewer</SubSectionTitle>
             <CodeInput
                 code={code}
                 language={language}
@@ -146,10 +194,26 @@ export default function MainPage() {
             <FileUploader handleFileUploaded={handleFileUploaded}/>
             <br/>
             <Button onClick={handleOnPreview}>Preview</Button>
-            <br/>
-            {isPreview && previewCode.length > 0 && getPreview()}
-            {!isPreview && previewCode.length > 0 &&
-                <Review originalCode={code} reviewedCode={reviewedCode} additionalComments={comments}></Review>}
         </Section>
+            {isLoadingPreview ? (
+                <LoadingSpinnerSection>
+                    <LoadingTitle>Loading</LoadingTitle>
+                    <SyncLoader color="white"></SyncLoader>
+                </LoadingSpinnerSection>
+            ) : (isPreview && previewCode.length > 0 && getPreview())}
+            {isLoading ? (
+                <LoadingSpinnerSection>
+                    <LoadingTitle>Reviewing your Code</LoadingTitle>
+                    <SyncLoader color="white"></SyncLoader>
+                </LoadingSpinnerSection>
+            ) : (
+                !isPreview && previewCode.length > 0 && (
+                    <Section>
+                        <SubSectionTitle>Code Review</SubSectionTitle>
+                        <Review originalCode={code} reviewedCode={reviewedCode} additionalComments={comments} />
+                    </Section>
+                )
+            )}
+        </>
     );
 }
