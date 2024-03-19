@@ -32,6 +32,12 @@ const SelectionPopup: React.FC<PopupProps> = ({ initialKey, onClose, onSave }) =
         onSave(key, value);
     }
 
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            handleSave();
+        }
+    };
+
     return (
         <div ref={popupRef} style={{ position: 'absolute', border: '1px solid gray', padding: '10px', backgroundColor: 'white', zIndex: 100 }}>
             <div>
@@ -51,6 +57,7 @@ const SelectionPopup: React.FC<PopupProps> = ({ initialKey, onClose, onSave }) =
                     type="text"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
+                    onKeyDown={handleKeyPress}
                 />
             </div>
             <div>

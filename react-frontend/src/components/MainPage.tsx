@@ -9,6 +9,7 @@ import Review from "./Review.tsx";
 import {SyncLoader} from "react-spinners";
 import hljs from "highlight.js";
 import SelectionPopup from "./SelectionPopup.tsx";
+import {presentSuccessToast} from "../shared/ToastComponent.tsx";
 
 export const Section = styled.div`
   display: flex;
@@ -57,6 +58,10 @@ export interface CodeResponse {
 
 export interface ReviewResponse {
     review: string;
+}
+
+export interface SubstitutionJSON {
+    [key: string]: string;
 }
 
 export default function MainPage() {
@@ -142,8 +147,19 @@ export default function MainPage() {
     }
 
     const saveNewSubstitution = (key: string, value: string): void => {
-        console.log('Key: ', key, 'Value: ', value);
+        modifyAndSaveSubstitution(key, value);
         setShowPopup(false);
+    }
+
+    const modifyAndSaveSubstitution = (key: string, value: string): void => {
+        const substitutionString = localStorage.getItem('substitutionMap');
+        let substitutionJson: SubstitutionJSON = {};
+        if (substitutionString) {
+            substitutionJson = JSON.parse(substitutionString);
+        }
+        substitutionJson[key] = value;
+        localStorage.setItem('substitutionMap', JSON.stringify(substitutionJson));
+        presentSuccessToast("Added substitution!", 1000);
     }
 
     const extractCodeBlockAndSetLanguage = (input: string): string | null => {
