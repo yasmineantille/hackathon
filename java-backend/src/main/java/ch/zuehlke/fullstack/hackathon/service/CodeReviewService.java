@@ -2,6 +2,8 @@ package ch.zuehlke.fullstack.hackathon.service;
 
 
 import ch.zuehlke.fullstack.hackathon.model.ReviewDto;
+import ch.zuehlke.fullstack.hackathon.model.CodeSnippetDto;
+import ch.zuehlke.fullstack.hackathon.model.SanitizationRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,5 +23,15 @@ public class CodeReviewService {
     public ReviewDto getExampleCodeReview() {
         String exampleCodeReview = "The code is perfect. No review necessary!";
         return new ReviewDto(exampleCodeReview);
+    }
+
+    public CodeSnippetDto getSanitizedCode(SanitizationRequestDto codeSnippet) {
+        String sanitizedCode = codeSnippet.codeSnippet();
+        return new CodeSnippetDto(sanitizedCode);
+    }
+
+    public CodeSnippetDto getUnsanitizedCode() {
+        String unsanitizedCode = "codeSnippet";
+        return new CodeSnippetDto(unsanitizedCode);
     }
 }
