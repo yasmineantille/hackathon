@@ -118,6 +118,7 @@ export interface SubstitutionJSON {
 export default function Header() {
 
   const [isOpen, setOpen] = useState(false);
+  const [refresh, setRefresh] = useState(0);
 
   const getCurrentMap = () => {
     const map = localStorage.getItem('substitutionMap');
@@ -140,38 +141,48 @@ export default function Header() {
     return (
       <table style={tableStyles}>
         <tbody>
-          {parsedMap.map((entry, index) => {
-            return (
-              <tr style={tableStyles.row} key={`tableRow_${index}`}>
-                <td>
-                  <input style={tableStyles}
-                         value={entry.key}
-                         type={'text'}
-                         onChange={(event) => onInputKeyChange(event, index)}
-                  />
-                </td>
-                <td>
-                  <input style={tableStyles}
-                         value={entry.value}
-                         type={'text'}
-                         onChange={(event) => onInputValueChange(event, index)}
-                  />
-                </td>
-                <td>
-                  <button style={tableStyles.actualButton} onClick={() => deleteEntry(index)}> X</button>
-                </td>
-              </tr>
-            );
-          })}
+        {parsedMap.map((entry, index) => {
+          return (
+            <tr style={tableStyles.row} key={`tableRow_${index}`}>
+              <td>
+                <input style={tableStyles}
+                       value={entry.key}
+                       type={'text'}
+                       onChange={(event) => onInputKeyChange(event, index)}
+                />
+              </td>
+              <td>
+                <input style={tableStyles}
+                       value={entry.value}
+                       type={'text'}
+                       onChange={(event) => onInputValueChange(event, index)}
+                />
+              </td>
+              <td>
+                <button style={tableStyles.actualButton} onClick={() => deleteEntry(index)}> X</button>
+              </td>
+            </tr>
+          );
+        })}
         </tbody>
       </table>
     );
   };
 
+  const newValForStorage = (key: string, value: string) => {
+    const copyOfState = [...getCurrentMap()];
+    copyOfState[copyOfState.length] = {key, value};
+
+    return copyOfState;
+  };
+
   const addRule = () => {
-    const stringForLocalStorage = JSON.stringify([...getCurrentMap(), {key: '', value: ''}]);
-    localStorage.setItem('substitutionMap', stringForLocalStorage);
-  }
+    const newState = newValForStorage('', '');
+    const stringForLocalStorage = JSON.stringify(toNewString(newState));
+
+    localStorage.setItem('substitutionMap', (stringForLocalStorage));
+    setRefresh(refresh + 1);
+  };
   const toNewString = (input: SanitizationMapRow[]) => {
     const newObj: SubstitutionJSON = {};
 
@@ -182,9 +193,9 @@ export default function Header() {
     const newVal = (event.nativeEvent.target as HTMLInputElement).value;
     const copyOfState = [...getCurrentMap()];
     copyOfState[index].key = newVal;
-
     const stringForLocalStorage = JSON.stringify(toNewString(copyOfState));
     localStorage.setItem('substitutionMap', stringForLocalStorage);
+    setRefresh(refresh + 1);
   };
 
   const onInputValueChange = (event: SyntheticEvent, index: number) => {
@@ -194,10 +205,9 @@ export default function Header() {
     copyOfState[index].value = newVal;
 
     const stringForLocalStorage = JSON.stringify(toNewString(copyOfState));
-    // setCurrentSubstitutionMap([...copyOfState]);
-    // setCurrentSubstitutionMap(copyOfState);
-    console.log('val ', toNewString(copyOfState));
     localStorage.setItem('substitutionMap', stringForLocalStorage);
+
+    setRefresh(refresh + 1);
   };
 
   const deleteEntry = (index: number) => {
@@ -208,6 +218,7 @@ export default function Header() {
 
     const stringForLocalStorage = JSON.stringify(toNewString(copyOfState));
     localStorage.setItem('substitutionMap', stringForLocalStorage);
+    setRefresh(refresh + 1);
   };
 
   const handleIsOpen = () => {
