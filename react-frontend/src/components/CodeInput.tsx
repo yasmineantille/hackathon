@@ -17,7 +17,8 @@ const CodeInput = ({code, language, onChange, onSelectionChange, returnEditorRef
       const model = editorInstance.getModel();
       if (model && onSelectionChange) {
         const selectedText = model.getValueInRange(selection);
-        if (selectedText.trim().length > 0) {
+        const regex = /^[a-zA-Z0-9_]+$/;
+        if (selectedText.trim().length > 0 && regex.test(selectedText) && selectedText !== code) {
           onSelectionChange(selectedText);
         }
       }
