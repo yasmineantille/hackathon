@@ -8,7 +8,7 @@ class RemoteService {
     constructor() {
         this.instance = axios.create({
             baseURL: '/api',
-            timeout: 60000,
+            timeout: 90000,
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*',

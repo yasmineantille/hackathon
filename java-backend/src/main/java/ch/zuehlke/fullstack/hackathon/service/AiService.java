@@ -78,7 +78,7 @@ public class AiService {
 
     private OpenAiService getOpenAiService() {
         if (openAiService == null) {
-            this.openAiService = new OpenAiService(apiKey, Duration.ofSeconds(60));
+            this.openAiService = new OpenAiService(apiKey, Duration.ofSeconds(90));
         }
 
         return openAiService;
