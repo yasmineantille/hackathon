@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,8 @@ public class CodeReviewService {
         Map<String, String> ruleset = codeRequest.ruleset();
 
         for(Map.Entry<String, String> entry: ruleset.entrySet()) {
-            codeSnippet = codeSnippet.replaceAll(entry.getKey(), entry.getValue());
+            String escapedKey = Pattern.quote(entry.getKey());
+            codeSnippet = codeSnippet.replaceAll(escapedKey, entry.getValue());
         }
 
         return new CodeSnippetDto(codeSnippet);
@@ -40,7 +42,8 @@ public class CodeReviewService {
     public String getUnsanitizedCode(String codeSnippet, Map<String, String> ruleset) {
         String result = codeSnippet;
         for(Map.Entry<String, String> entry: ruleset.entrySet()) {
-            result = result.replaceAll(entry.getValue(), entry.getKey());
+            String escapedValue = Pattern.quote(entry.getValue());
+            result = result.replaceAll(escapedValue, entry.getKey());
         }
 
         return result;
