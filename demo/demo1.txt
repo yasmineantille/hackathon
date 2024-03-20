@@ -1,0 +1,46 @@
+package ch.zuehlke.fullstack.garbage.service;
+
+
+import ch.zuehlke.fullstack.garbage.dto.SBBExpenseDTO;
+import ch.zuehlke.fullstack.garbage.dto.ZuehlkeExpenseDTO;
+import ch.zuehlke.fullstack.garbage.dto.FullExpense;
+import ch.zuehlke.fullstack.garbage.postgres.ExpenseRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
+@Service
+@RequiredArgsConstructor
+public class ExpensesService {
+
+    private final ExpenseRepository repository;
+
+    public SBBExpenseDTO getSBBExpenses() {
+        Optional<Double> expenses = repository.getExpense("SBB");
+        return new SBBExpenseDTO(expenses.orElse("No Expense."));
+    }
+
+    public ZuehlkeExpenseDTO getZuehlkeExpense() {
+        Optional<Double> expenses = repository.getExpense("Zuhlke");
+        return new ZuehlkeExpenseDTO(expenses.orElse("No Expense."));
+    }
+
+    public FullExpense getAllExpense() {
+        Optional<Double> sbbExpenses = repository.getExpense("SBB");
+        Optional<Double> zuhlkeExpenses = repository.getExpense("Zuhlke");
+        repository.deleteAllExpenses();
+        return new FullExpense(sbbExpenses, zuhlkeExpenses);
+    }
+
+
+    public String getUnsanitizedCode(String codeSnippet, Map<String, String> ruleset) {
+        String result = codeSnippet;
+        for(Map.Entry<String, String> entry: ruleset.entrySet()) {
+        String escapedValue = Pattern.quote(entry.getValue());
+        result = result.replaceAll(escapedValue, entry.getKey());
+        return result;
+    }
+}
