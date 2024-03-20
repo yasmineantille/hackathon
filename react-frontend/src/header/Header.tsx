@@ -44,13 +44,21 @@ const HamburgerMenuPlaceholder = styled.div`
   padding: 18px;
 `;
 
-const hamburgerMenuStyles = {
-  table: {
-    width: '140%',
-    row: {
-      width: '4rem',
-    },
+const tableStyles = {
+  width: '100%',
+  padding: '0',
+  row: {
+    width: '30rem',
+    border: '1px solid black', /* Add a solid 1px black border to cells */
+    padding: '0',
   },
+
+  actualButton: {
+    border: 'none'
+  }
+};
+
+const hamburgerMenuStyles = {
   bmBurgerButton: {
     position: 'fixed',
     width: '36px',
@@ -77,7 +85,7 @@ const hamburgerMenuStyles = {
   },
   bmMenu: {
     background: '#f0f0f0',
-    padding: '2.5em 1.5em 0',
+    padding: '2.5em 0',
     fontSize: '1.15em',
   },
   bmMorphShape: {
@@ -133,26 +141,26 @@ export default function Header() {
 
   const renderKeys = (parsedMap: SanitizationMapRow[]) => {
     return (
-      <table style={hamburgerMenuStyles.table}>
+      <table style={tableStyles}>
         {parsedMap.map((entry, index) => {
           return (
-            <tr>
+            <tr style={tableStyles.row}>
               <td>
-                <input style={hamburgerMenuStyles.table.row}
+                <input style={tableStyles}
                        defaultValue={entry.key}
                        type={'text'}
                        onChange={(event) => onInputKeyChange(event, index)}
                 />
               </td>
               <td>
-                <input style={hamburgerMenuStyles.table.row}
+                <input style={tableStyles}
                        defaultValue={entry.value}
                        type={'text'}
                        onChange={(event) => onInputValueChange(event, index)}
                 />
               </td>
               <td>
-                <Button onClick={() => deleteEntry(index)}> Del </Button>
+                <button style={tableStyles.actualButton} onClick={() => deleteEntry(index)}> X </button>
               </td>
             </tr>
           );
@@ -162,7 +170,7 @@ export default function Header() {
     );
   };
 
-  const addRule = () => setCurrentSubstitutionMap([...currentSubstitutionMap, {key:'', value:''}]);
+  const addRule = () => setCurrentSubstitutionMap([...currentSubstitutionMap, {key: '', value: ''}]);
   const toNewString = (input: SanitizationMapRow[]) => {
     const newObj: SubstitutionJSON = {};
 
