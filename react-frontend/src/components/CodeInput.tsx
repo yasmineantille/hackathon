@@ -6,11 +6,13 @@ export interface CodeInputProps {
     language: string;
     onChange: (newValue?: string) => void;
     onSelectionChange?: (newSelection: string) => void;
+    returnEditorReference: (ref: any) => void;
 }
 
-const CodeInput = ({code, language, onChange, onSelectionChange}: CodeInputProps): JSX.Element => {
+const CodeInput = ({code, language, onChange, onSelectionChange, returnEditorReference}: CodeInputProps) => {
     const editorDidMount: OnMount = (editorInstance) => {
         editorInstance.focus();
+        returnEditorReference(editorInstance);
         const debouncedSelectionChange = debounce((selection: any) => {
             const model = editorInstance.getModel();
             if (model && onSelectionChange) {
