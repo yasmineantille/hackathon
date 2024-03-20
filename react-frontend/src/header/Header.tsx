@@ -110,7 +110,6 @@ export interface SubstitutionJSON {
 export default function Header() {
 
   const [isOpen, setOpen] = useState(false);
-  const [showingMapEditor, setShowingMapEditor] = useState(false);
   const [currentSubstitutionMap, setCurrentSubstitutionMap] = useState<SanitizationMapRow[]>([]);
 
   useEffect(() => {
@@ -133,31 +132,37 @@ export default function Header() {
   };
 
   const renderKeys = (parsedMap: SanitizationMapRow[]) => {
-    return parsedMap.map((entry, index) => {
-      return (
-        <tr>
-          <td>
-            <input style={hamburgerMenuStyles.table.row}
-                   defaultValue={entry.key}
-                   type={'text'}
-                   onChange={(event) => onInputKeyChange(event, index)}
-            />
-          </td>
-          <td>
-            <input style={hamburgerMenuStyles.table.row}
-                   defaultValue={entry.value}
-                   type={'text'}
-                   onChange={(event) => onInputValueChange(event, index)}
-            />
-          </td>
-          <td>
-            <Button onClick={() => deleteEntry(entry, index)}> Del </Button>
-          </td>
-        </tr>
-      );
-    });
+    return (
+      <table style={hamburgerMenuStyles.table}>
+        {parsedMap.map((entry, index) => {
+          return (
+            <tr>
+              <td>
+                <input style={hamburgerMenuStyles.table.row}
+                       defaultValue={entry.key}
+                       type={'text'}
+                       onChange={(event) => onInputKeyChange(event, index)}
+                />
+              </td>
+              <td>
+                <input style={hamburgerMenuStyles.table.row}
+                       defaultValue={entry.value}
+                       type={'text'}
+                       onChange={(event) => onInputValueChange(event, index)}
+                />
+              </td>
+              <td>
+                <Button onClick={() => deleteEntry(index)}> Del </Button>
+              </td>
+            </tr>
+          );
+        })}
+      </table>
+
+    );
   };
 
+  const addRule = () => setCurrentSubstitutionMap([...currentSubstitutionMap, {key:'', value:''}]);
   const toNewString = (input: SanitizationMapRow[]) => {
     const newObj: SubstitutionJSON = {};
 
@@ -185,9 +190,9 @@ export default function Header() {
     localStorage.setItem('substitutionMap', stringForLocalStorage);
   };
 
-  const deleteEntry = (entry: SanitizationMapRow, index: number) => {
+  const deleteEntry = (index: number) => {
     const copyOfState = [...currentSubstitutionMap];
-    copyOfState.splice(index,1);
+    copyOfState.splice(index, 1);
 
     setCurrentSubstitutionMap(copyOfState);
 
@@ -206,23 +211,8 @@ export default function Header() {
   return (
     <>
       <Menu right styles={hamburgerMenuStyles} isOpen={isOpen} onOpen={handleIsOpen} onClose={handleIsOpen}>
-        {showingMapEditor
-          ? (
-            <table style={hamburgerMenuStyles.table}>
-              {renderKeys(currentSubstitutionMap)}
-            </table>
-          ) : (<>
-            <NavLink to="/" onClick={closeSideBar}>
-              Home
-            </NavLink>
-            <NavLink to="/other" onClick={closeSideBar}>
-              Other Page
-            </NavLink>
-            <NavLink to="https://github.com/yasmineantille/hackathon">Github</NavLink>
-
-            <Button onClick={() => setShowingMapEditor(true)}> Edit sanitize map</Button>
-          </>)
-        }
+        {renderKeys(currentSubstitutionMap)}
+        <Button onClick={addRule}> Add row </Button>
       </Menu>
 
       <HeaderSection>
