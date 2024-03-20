@@ -2,15 +2,16 @@ import styled from 'styled-components';
 import {useEffect, useState} from 'react';
 import FileUploader from './FileUploader.tsx';
 import CodeInput from './CodeInput.tsx';
-import Button from "../shared/Button.tsx";
-import remoteService from "../services/RemoteService.tsx";
-import DiffViewer from "./DiffViewer.tsx";
-import Review from "./Review.tsx";
-import {SyncLoader} from "react-spinners";
-import hljs from "highlight.js";
-import SelectionPopup from "./SelectionPopup.tsx";
-import {presentSuccessToast} from "../shared/ToastComponent.tsx";
-import Markdown from "react-markdown";
+import Button from '../shared/Button.tsx';
+import remoteService from '../services/RemoteService.tsx';
+import DiffViewer from './DiffViewer.tsx';
+import Review from './Review.tsx';
+import {SyncLoader} from 'react-spinners';
+import hljs from 'highlight.js';
+import SelectionPopup from './SelectionPopup.tsx';
+import {presentSuccessToast} from '../shared/ToastComponent.tsx';
+import Markdown from 'react-markdown';
+import {editor} from 'monaco-editor';
 
 export const Section = styled.div`
   display: flex;
@@ -36,16 +37,16 @@ export const LoadingTitle = styled.h1`
 `;
 
 export const LoadingSpinnerSection = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
 `;
 
 export interface CodeRequestDto {
@@ -76,6 +77,7 @@ export default function MainPage() {
     const [selectedCode, setSelectedCode] = useState('');
     const [isLoadingPreview, setIsLoadingPreview] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [editorReference, setEditorReference] = useState<editor.IStandaloneCodeEditor>();
 
     useEffect(() => {
         const map = localStorage.getItem('substitutionMap');
@@ -139,7 +141,10 @@ export default function MainPage() {
             });
     }
 
-    const closePopup = () => setShowPopup(false);
+    const closePopup = () => {
+        setShowPopup(false);
+        editorReference?.focus();
+    }
 
     const handleSelectionChange = (selection: string): void => {
         setSelectedCode(selection);
@@ -190,6 +195,10 @@ export default function MainPage() {
             <Button onClick={handleOnSubmit}>Submit</Button></Section>;
     }
 
+    const editorReferenceReturned = (reference: editor.IStandaloneCodeEditor) => {
+        setEditorReference(reference);
+    }
+
     return (
         <>
         <Section>
@@ -199,6 +208,7 @@ export default function MainPage() {
                 language={language}
                 onChange={handleOnCodeChange}
                 onSelectionChange={handleSelectionChange}
+                returnEditorReference={editorReferenceReturned}
             ></CodeInput>
             {showPopup && (
                 <SelectionPopup
