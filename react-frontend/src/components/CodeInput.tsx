@@ -44,7 +44,7 @@ const CodeInput = ({code, language, onChange, onSelectionChange, returnEditorRef
         onMount={editorDidMount}
       />
 
-      <span>Detected language: {language}</span>
+      <span style={{paddingTop: '15px'}}>Detected language: {language}</span>
     </div>
   );
 };
