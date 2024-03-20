@@ -82,9 +82,9 @@ export default function MainPage() {
     useEffect(() => {
         const map = localStorage.getItem('substitutionMap');
         const defaultMap = {
-            Dan: 'Programmer0',
-            Yasmine: 'Programmer1',
-            Cedrik: 'Programmer2'
+            SBB: 'CompanyA',
+            Zuehlke: 'CompanyZ',
+            Zuhlke: 'CompanyZ'
         };
         if (!map) {
             localStorage.setItem('substitutionMap', JSON.stringify(defaultMap));
@@ -98,8 +98,11 @@ export default function MainPage() {
     };
 
     const detectLanguage = (codeSnippet: string) => {
-        const language = hljs.highlightAuto(codeSnippet).language;
+        let language = hljs.highlightAuto(codeSnippet, ['java', 'javascript', 'c++']).language;
         if (language) {
+            // if (language == 'typescript'){
+            //     language = 'java';
+            // }
             setLanguage(language);
         }
     }
