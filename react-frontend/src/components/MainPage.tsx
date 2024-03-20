@@ -10,6 +10,7 @@ import {SyncLoader} from "react-spinners";
 import hljs from "highlight.js";
 import SelectionPopup from "./SelectionPopup.tsx";
 import {presentSuccessToast} from "../shared/ToastComponent.tsx";
+import Markdown from "react-markdown";
 
 export const Section = styled.div`
   display: flex;
@@ -75,7 +76,6 @@ export default function MainPage() {
     const [selectedCode, setSelectedCode] = useState('');
     const [isLoadingPreview, setIsLoadingPreview] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
 
     useEffect(() => {
         const map = localStorage.getItem('substitutionMap');
@@ -224,10 +224,15 @@ export default function MainPage() {
                 </LoadingSpinnerSection>
             ) : (
                 !isPreview && previewCode.length > 0 && (
-                    <Section>
+                    <><Section>
                         <SubSectionTitle>Code Review</SubSectionTitle>
-                        <Review originalCode={code} reviewedCode={reviewedCode} additionalComments={comments} />
+                        <Review originalCode={code} reviewedCode={reviewedCode} />
                     </Section>
+                    <Section>
+                        <SubSectionTitle>Additional Review Comments</SubSectionTitle>
+                        <Markdown>{comments}</Markdown>
+                    </Section>
+                    </>
                 )
             )}
         </>
