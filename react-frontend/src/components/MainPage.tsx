@@ -14,26 +14,26 @@ import Markdown from 'react-markdown';
 import {editor} from 'monaco-editor';
 
 export const Section = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.5rem 0.5rem 1.5rem 0.5rem;
-  background-color: rgba(165, 165, 165, 0);
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-top: 1.5rem;
-  background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 0.5rem 1.5rem 0.5rem;
+    background-color: rgba(165, 165, 165, 0);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 1.5rem;
+    background-color: white;
 `;
 
 export const SubSectionTitle = styled.h1`
-  font-size: 20px;
-  margin-bottom: 10px;
+    font-size: 20px;
+    margin-bottom: 10px;
 `;
 
 export const LoadingTitle = styled.h1`
-  font-size: 40px;
-  margin-right: 25px;
-  color: white;
+    font-size: 40px;
+    margin-right: 25px;
+    color: white;
 `;
 
 export const LoadingSpinnerSection = styled.div`
@@ -190,7 +190,7 @@ export default function MainPage() {
     function getPreview() {
         return <Section>
             <SubSectionTitle>Preview of Code You Want Reviewed</SubSectionTitle>
-            <DiffViewer original={code} modified={previewCode}></DiffViewer>
+            <DiffViewer original={code} modified={previewCode} language={language}></DiffViewer>
             <br/>
             <Button onClick={handleOnSubmit}>Submit</Button></Section>;
     }
@@ -201,26 +201,26 @@ export default function MainPage() {
 
     return (
         <>
-        <Section>
-            <SubSectionTitle>Your Friendly Neighbourhood Code Reviewer</SubSectionTitle>
-            <CodeInput
-                code={code}
-                language={language}
-                onChange={handleOnCodeChange}
-                onSelectionChange={handleSelectionChange}
-                returnEditorReference={editorReferenceReturned}
-            ></CodeInput>
-            {showPopup && (
-                <SelectionPopup
-                    initialKey={selectedCode}
-                    onClose={closePopup}
-                    onSave={saveNewSubstitution}
-                />
-            )}
-            <FileUploader handleFileUploaded={handleFileUploaded}/>
-            <br/>
-            <Button onClick={handleOnPreview}>Preview</Button>
-        </Section>
+            <Section>
+                <SubSectionTitle>Your Friendly Neighbourhood Code Reviewer</SubSectionTitle>
+                <CodeInput
+                    code={code}
+                    language={language}
+                    onChange={handleOnCodeChange}
+                    onSelectionChange={handleSelectionChange}
+                    returnEditorReference={editorReferenceReturned}
+                ></CodeInput>
+                {showPopup && (
+                    <SelectionPopup
+                        initialKey={selectedCode}
+                        onClose={closePopup}
+                        onSave={saveNewSubstitution}
+                    />
+                )}
+                <FileUploader handleFileUploaded={handleFileUploaded}/>
+                <br/>
+                <Button onClick={handleOnPreview}>Preview</Button>
+            </Section>
             {isLoadingPreview ? (
                 <LoadingSpinnerSection>
                     <LoadingTitle>Loading</LoadingTitle>
@@ -236,12 +236,12 @@ export default function MainPage() {
                 !isPreview && previewCode.length > 0 && (
                     <><Section>
                         <SubSectionTitle>Code Review</SubSectionTitle>
-                        <Review originalCode={code} reviewedCode={reviewedCode} />
+                        <Review originalCode={code} reviewedCode={reviewedCode} language={language}/>
                     </Section>
-                    <Section>
-                        <SubSectionTitle>Additional Review Comments</SubSectionTitle>
-                        <Markdown>{comments}</Markdown>
-                    </Section>
+                        <Section>
+                            <SubSectionTitle>Additional Review Comments</SubSectionTitle>
+                            <Markdown>{comments}</Markdown>
+                        </Section>
                     </>
                 )
             )}
