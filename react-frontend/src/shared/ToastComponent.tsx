@@ -25,9 +25,10 @@ export function presentInfoToast(message: string): void {
     });
 }
 
-export function presentSuccessToast(message: string): void {
+export function presentSuccessToast(message: string, autoClose: number): void {
     toast.success(message, {
         ...defaultToastOptions,
+        autoClose: autoClose,
         style: { background: 'var(--secondary)' },
     });
 }
