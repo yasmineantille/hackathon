@@ -1,4 +1,4 @@
-import {SyntheticEvent, useEffect, useState} from 'react';
+import {SyntheticEvent, useState} from 'react';
 import styled from 'styled-components';
 import logo from '/src/assets/zuhlke-logo-rgb.png';
 import {Link} from 'react-router-dom';
@@ -118,11 +118,6 @@ export interface SubstitutionJSON {
 export default function Header() {
 
   const [isOpen, setOpen] = useState(false);
-  const [currentSubstitutionMap, setCurrentSubstitutionMap] = useState<SanitizationMapRow[]>([]);
-
-  useEffect(() => {
-    getCurrentMap();
-  }, []);
 
   const getCurrentMap = () => {
     const map = localStorage.getItem('substitutionMap');
@@ -135,8 +130,10 @@ export default function Header() {
         result.push({key: entry[0], value: entry[1] as string});
       });
 
-      setCurrentSubstitutionMap(result);
+      return result;
     }
+
+    return [];
   };
 
   const renderKeys = (parsedMap: SanitizationMapRow[]) => {
@@ -171,7 +168,10 @@ export default function Header() {
     );
   };
 
-  const addRule = () => setCurrentSubstitutionMap([...currentSubstitutionMap, {key: '', value: ''}]);
+  const addRule = () => {
+    const stringForLocalStorage = JSON.stringify([...getCurrentMap(), {key: '', value: ''}]);
+    localStorage.setItem('substitutionMap', stringForLocalStorage);
+  }
   const toNewString = (input: SanitizationMapRow[]) => {
     const newObj: SubstitutionJSON = {};
 
@@ -180,32 +180,31 @@ export default function Header() {
   };
   const onInputKeyChange = (event: SyntheticEvent, index: number) => {
     const newVal = (event.nativeEvent.target as HTMLInputElement).value;
-    const copyOfState = [...currentSubstitutionMap];
+    const copyOfState = [...getCurrentMap()];
     copyOfState[index].key = newVal;
 
     const stringForLocalStorage = JSON.stringify(toNewString(copyOfState));
-    setCurrentSubstitutionMap(copyOfState);
     localStorage.setItem('substitutionMap', stringForLocalStorage);
   };
 
   const onInputValueChange = (event: SyntheticEvent, index: number) => {
     const newVal = (event.nativeEvent.target as HTMLInputElement).value;
 
-    const copyOfState = [...currentSubstitutionMap];
+    const copyOfState = [...getCurrentMap()];
     copyOfState[index].value = newVal;
 
     const stringForLocalStorage = JSON.stringify(toNewString(copyOfState));
     // setCurrentSubstitutionMap([...copyOfState]);
-    setCurrentSubstitutionMap(copyOfState);
+    // setCurrentSubstitutionMap(copyOfState);
     console.log('val ', toNewString(copyOfState));
     localStorage.setItem('substitutionMap', stringForLocalStorage);
   };
 
   const deleteEntry = (index: number) => {
-    const copyOfState = [...currentSubstitutionMap];
+    const copyOfState = [...getCurrentMap()];
     copyOfState.splice(index, 1);
 
-    setCurrentSubstitutionMap(copyOfState);
+    // setCurrentSubstitutionMap(copyOfState);
 
     const stringForLocalStorage = JSON.stringify(toNewString(copyOfState));
     localStorage.setItem('substitutionMap', stringForLocalStorage);
@@ -218,7 +217,7 @@ export default function Header() {
   return (
     <>
       <Menu right styles={hamburgerMenuStyles} isOpen={isOpen} onOpen={handleIsOpen} onClose={handleIsOpen}>
-        {renderKeys(currentSubstitutionMap)}
+        {renderKeys(getCurrentMap())}
         <Button onClick={addRule}> Add row </Button>
       </Menu>
 
