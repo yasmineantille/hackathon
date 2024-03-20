@@ -30,7 +30,7 @@ const CodeInput = ({code, language, onChange, onSelectionChange, returnEditorRef
   };
 
   return (
-    <div style={{width: '100%', display: 'fl4x', flexDirection: 'column', alignItems: 'center'}}>
+    <div style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
       <MonacoEditor
         height="20rem"
         width="90%"
