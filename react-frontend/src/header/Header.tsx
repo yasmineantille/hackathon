@@ -54,8 +54,8 @@ const tableStyles = {
   },
 
   actualButton: {
-    border: 'none'
-  }
+    border: 'none',
+  },
 };
 
 const hamburgerMenuStyles = {
@@ -142,31 +142,32 @@ export default function Header() {
   const renderKeys = (parsedMap: SanitizationMapRow[]) => {
     return (
       <table style={tableStyles}>
-        {parsedMap.map((entry, index) => {
-          return (
-            <tr style={tableStyles.row}>
-              <td>
-                <input style={tableStyles}
-                       defaultValue={entry.key}
-                       type={'text'}
-                       onChange={(event) => onInputKeyChange(event, index)}
-                />
-              </td>
-              <td>
-                <input style={tableStyles}
-                       defaultValue={entry.value}
-                       type={'text'}
-                       onChange={(event) => onInputValueChange(event, index)}
-                />
-              </td>
-              <td>
-                <button style={tableStyles.actualButton} onClick={() => deleteEntry(index)}> X </button>
-              </td>
-            </tr>
-          );
-        })}
+        <tbody>
+          {parsedMap.map((entry, index) => {
+            return (
+              <tr style={tableStyles.row} key={`tableRow_${index}`}>
+                <td>
+                  <input style={tableStyles}
+                         defaultValue={entry.key}
+                         type={'text'}
+                         onChange={(event) => onInputKeyChange(event, index)}
+                  />
+                </td>
+                <td>
+                  <input style={tableStyles}
+                         defaultValue={entry.value}
+                         type={'text'}
+                         onChange={(event) => onInputValueChange(event, index)}
+                  />
+                </td>
+                <td>
+                  <button style={tableStyles.actualButton} onClick={() => deleteEntry(index)}> X</button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
       </table>
-
     );
   };
 
@@ -210,10 +211,6 @@ export default function Header() {
 
   const handleIsOpen = () => {
     setOpen(!isOpen);
-  };
-
-  const closeSideBar = () => {
-    setOpen(false);
   };
 
   return (
