@@ -148,14 +148,14 @@ export default function Header() {
               <tr style={tableStyles.row} key={`tableRow_${index}`}>
                 <td>
                   <input style={tableStyles}
-                         defaultValue={entry.key}
+                         value={entry.key}
                          type={'text'}
                          onChange={(event) => onInputKeyChange(event, index)}
                   />
                 </td>
                 <td>
                   <input style={tableStyles}
-                         defaultValue={entry.value}
+                         value={entry.value}
                          type={'text'}
                          onChange={(event) => onInputValueChange(event, index)}
                   />
@@ -184,6 +184,7 @@ export default function Header() {
     copyOfState[index].key = newVal;
 
     const stringForLocalStorage = JSON.stringify(toNewString(copyOfState));
+    setCurrentSubstitutionMap(copyOfState);
     localStorage.setItem('substitutionMap', stringForLocalStorage);
   };
 
@@ -195,6 +196,7 @@ export default function Header() {
 
     const stringForLocalStorage = JSON.stringify(toNewString(copyOfState));
     // setCurrentSubstitutionMap([...copyOfState]);
+    setCurrentSubstitutionMap(copyOfState);
     console.log('val ', toNewString(copyOfState));
     localStorage.setItem('substitutionMap', stringForLocalStorage);
   };
